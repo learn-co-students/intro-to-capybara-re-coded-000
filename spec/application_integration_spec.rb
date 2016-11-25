@@ -1,29 +1,27 @@
-# Write your tests here!
 require 'spec_helper'
-describe "Application" do
-  describe "GET '/'" do
-    before do
-      get '/'
-    end
-    it "returns a 200 status code" do
-      expect(last_response.status).to eq(200)
-    end
 
+describe "GET '/' - Greeting Form" do
+  # Code from previous example
+  it 'welcomes the user' do
+    visit '/'
+    expect(page.body).to include("Welcome!")
+  end
 
-    it "renders index.erb" do
-      expect(last_response.body).to eq(File.read("views/index.erb"))
-    end
+  # New test
+  it 'has a greeting form with a user_name field' do
+    visit '/'
 
- end
- describe "POST '/'" do
-   before do
-     post '/greet'
-   end
-   it "returns a 200 status code" do
-     expect(last_response.status).to eq(200)
-   end
-   it "renders greet.erb" do
-     expect(last_response.body).to include("<h1>Hi , nice to meet you!</h1>")
-   end
- end
+    expect(page).to have_selector("form")
+    expect(page).to have_field(:user_name)
+  end
+  describe "POST '/greet' - User Greeting" do
+  it 'greets the user personally based on their user_name in the form' do
+    visit '/'
+
+    fill_in(:user_name, :with => "Avi")
+    click_button "Submit"
+
+    expect(page).to have_text("Hi Avi, nice to meet you!")
+  end
+end
 end
